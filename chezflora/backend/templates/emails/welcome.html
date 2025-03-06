@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to ChezFlora</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .header {
+        text-align: center;
+        padding: 20px 0;
+        background-color: #f8f9fa;
+      }
+      .content {
+        padding: 20px;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+        font-size: 12px;
+        color: #777;
+        background-color: #f8f9fa;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Welcome to ChezFlora!</h1>
+    </div>
+
+    <div class="content">
+      <p>Dear {{firstName}},</p>
+
+      <p>
+        Thank you for registering with ChezFlora! We're excited to have you join
+        our community of flower enthusiasts.
+      </p>
+
+      <p>With your new account, you can:</p>
+      <ul>
+        <li>Browse our fresh selection of flowers and plants</li>
+        <li>Create and save your favorite arrangements</li>
+        <li>Place and track orders easily</li>
+        <li>Request custom floral designs for special events</li>
+      </ul>
+
+      <p>Feel free to explore our shop and discover the beauty of nature!</p>
+
+      <a href="{{loginUrl}}" class="btn">Visit Our Shop</a>
+
+      <p>
+        If you have any questions or need assistance, don't hesitate to contact
+        our customer service team.
+      </p>
+
+      <p>Best regards,<br />The ChezFlora Team</p>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 ChezFlora. All rights reserved.</p>
+    </div>
+  </body>
+</html>

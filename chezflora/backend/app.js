@@ -5,49 +5,61 @@ const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config();
 
+// Import custom modules
+const logger = require('./config/logger');
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
+
 // Create Express app
 const app = express();
 
-// Set security HTTP headers
+// Security middlewares
 app.use(helmet());
 
-// Parse JSON request bodies
-app.use(express.json());
-
-// Parse URL-encoded request bodies
-app.use(express.urlencoded({ extended: true }));
-
-// Enable CORS
+// CORS middleware
 app.use(cors());
 
-// HTTP request logger middleware
-app.use(morgan('dev'));
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// Serve static files from the 'public' directory
+// Logging middleware
+app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
+
+// Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
 
-// Base route for testing
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+
+// API Root route
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to ChezFlora API' });
+    res.json({ 
+        message: 'Welcome to ChezFlora API',
+        version: '1.0.0'
+    });
 });
 
 // Health check route
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+    res.status(200).json({ 
+        status: 'ok',
+        timestamp: new Date(),
+        environment: process.env.NODE_ENV || 'development'
+    });
 });
 
 // 404 handler
-app.use((req, res, next) => {
-    res.status(404).json({ message: `Not Found - ${req.originalUrl}` });
-});
+app.use(notFound);
 
 // Error handler
-app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    res.status(statusCode).json({
-        message: err.message || 'Server Error',
-        stack: process.env.NODE_ENV === 'development' ? err.stack : {}
-    });
-});
+app.use(errorHandler);
 
 module.exports = app;
