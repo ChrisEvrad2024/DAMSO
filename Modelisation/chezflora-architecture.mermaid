@@ -1,0 +1,49 @@
+graph TB
+    %% Clients
+    Client[Client Web / Mobile]
+    
+    %% Frontend
+    subgraph Frontend["Frontend (React.js)"]
+        ClientApp["Application Client<br>(React.js)"]
+        AdminApp["Dashboard Admin<br>(React.js)"]
+    end
+    
+    %% Backend
+    subgraph Backend["Backend (Node.js + Express.js)"]
+        API["API RESTful"]
+        
+        subgraph Middleware["Middleware"]
+            Auth["Authentification<br>& Autorisation"]
+            Valid["Validation<br>des données"]
+            Cache["Cache"]
+            Logger["Journalisation"]
+        end
+        
+        subgraph Services["Services métier"]
+            UserService["Service<br>Utilisateurs"]
+            ProductService["Service<br>Produits"]
+            OrderService["Service<br>Commandes"]
+            QuoteService["Service<br>Devis"]
+            BlogService["Service<br>Blog"]
+        end
+        
+        subgraph Utils["Utilitaires"]
+            Email["Service Email"]
+            Upload["Gestion des<br>téléchargements"]
+            Backup["Sauvegarde<br>automatique"]
+        end
+    end
+    
+    %% Base de données
+    subgraph Database["Base de données"]
+        DB["MongoDB/PostgreSQL"]
+    end
+    
+    %% Connexions
+    Client --> ClientApp & AdminApp
+    ClientApp & AdminApp --> API
+    API --> Middleware
+    
+    Middleware --> Services
+    Services --> Utils
+    Services --> DB

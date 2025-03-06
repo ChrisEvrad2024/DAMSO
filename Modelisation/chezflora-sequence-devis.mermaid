@@ -1,0 +1,57 @@
+sequenceDiagram
+    actor Client
+    actor Admin
+    participant SiteClient as Interface Client
+    participant SiteAdmin as Dashboard Admin
+    participant API as API Backend
+    participant BDD as Base de données
+    participant Email as Service Email
+    
+    %% Demande de devis
+    Client->>SiteClient: Remplit formulaire de devis
+    SiteClient->>API: POST /devis
+    API->>BDD: INSERT INTO devis
+    BDD-->>API: Confirmation
+    API->>Email: Notification à l'admin
+    API-->>SiteClient: Confirmation demande
+    SiteClient-->>Client: Message de confirmation
+    
+    %% Traitement par l'admin
+    Admin->>SiteAdmin: Consulte les demandes de devis
+    SiteAdmin->>API: GET /admin/devis
+    API->>BDD: SELECT * FROM devis
+    BDD-->>API: Liste des devis
+    API-->>SiteAdmin: Affiche les devis
+    
+    %% Création d'une proposition
+    Admin->>SiteAdmin: Édite le devis
+    SiteAdmin->>API: PUT /admin/devis/:id
+    API->>BDD: UPDATE devis
+    BDD-->>API: Confirmation
+    API-->>SiteAdmin: Devis mis à jour
+    
+    %% Envoi de la proposition
+    Admin->>SiteAdmin: Envoie le devis au client
+    SiteAdmin->>API: POST /admin/devis/:id/envoyer
+    API->>BDD: UPDATE devis SET statut='envoyé'
+    BDD-->>API: Confirmation
+    API->>Email: Envoie le devis au client
+    API-->>SiteAdmin: Confirmation d'envoi
+    
+    %% Consultation par le client
+    Email-->>Client: Notification de devis disponible
+    Client->>SiteClient: Consulte le devis
+    SiteClient->>API: GET /client/devis/:id
+    API->>BDD: SELECT * FROM devis
+    BDD-->>API: Données du devis
+    API-->>SiteClient: Détails du devis
+    SiteClient-->>Client: Affiche le devis
+    
+    %% Acceptation du devis
+    Client->>SiteClient: Accepte le devis
+    SiteClient->>API: PUT /client/devis/:id/accepter
+    API->>BDD: UPDATE devis SET statut='accepté'
+    BDD-->>API: Confirmation
+    API->>Email: Notifie l'admin
+    API-->>SiteClient: Confirmation
+    SiteClient-->>Client: Message de confirmation

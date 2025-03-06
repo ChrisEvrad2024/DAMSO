@@ -1,0 +1,179 @@
+erDiagram
+    UTILISATEURS {
+        string id PK
+        string nom
+        string prenom
+        string email
+        string mot_de_passe
+        string telephone
+        string role
+        date date_inscription
+    }
+    
+    ADRESSES {
+        string id PK
+        string utilisateur_id FK
+        string nom
+        string prenom
+        string rue
+        string code_postal
+        string ville
+        string pays
+        string telephone
+        boolean par_defaut
+    }
+    
+    CATEGORIES {
+        string id PK
+        string nom
+        string description
+        string image
+    }
+    
+    PRODUITS {
+        string id PK
+        string categorie_id FK
+        string nom
+        string description
+        decimal prix
+        integer stock
+        boolean actif
+        date date_creation
+    }
+    
+    IMAGES_PRODUIT {
+        string id PK
+        string produit_id FK
+        string url
+        integer ordre
+    }
+    
+    PANIERS {
+        string id PK
+        string utilisateur_id FK
+        date date_creation
+    }
+    
+    ARTICLES_PANIER {
+        string id PK
+        string panier_id FK
+        string produit_id FK
+        integer quantite
+        decimal prix_unitaire
+    }
+    
+    COMMANDES {
+        string id PK
+        string utilisateur_id FK
+        string statut
+        date date_creation
+        decimal montant_total
+        string adresse_livraison_id FK
+        string methode_paiement
+    }
+    
+    ARTICLES_COMMANDE {
+        string id PK
+        string commande_id FK
+        string produit_id FK
+        integer quantite
+        decimal prix_unitaire
+    }
+    
+    DEVIS {
+        string id PK
+        string utilisateur_id FK
+        string statut
+        string description
+        string type_evenement
+        date date_evenement
+        date date_creation
+        date date_validite
+        decimal budget
+        string commentaire_client
+        string commentaire_admin
+    }
+    
+    ARTICLES_DEVIS {
+        string id PK
+        string devis_id FK
+        string description
+        integer quantite
+        decimal prix_unitaire
+    }
+    
+    SERVICES {
+        string id PK
+        string nom
+        string description
+        decimal prix_base
+        boolean disponible
+    }
+    
+    IMAGES_SERVICE {
+        string id PK
+        string service_id FK
+        string url
+        integer ordre
+    }
+    
+    ARTICLES_BLOG {
+        string id PK
+        string auteur_id FK
+        string titre
+        string contenu
+        date date_publication
+        string categorie
+        string statut
+    }
+    
+    COMMENTAIRES {
+        string id PK
+        string article_id FK
+        string utilisateur_id FK
+        string contenu
+        date date_creation
+        string statut
+    }
+    
+    PROMOTIONS {
+        string id PK
+        string nom
+        string description
+        decimal reduction
+        date date_debut
+        date date_fin
+    }
+    
+    PRODUITS_PROMOTION {
+        string promotion_id FK
+        string produit_id FK
+    }
+    
+    UTILISATEURS ||--o{ ADRESSES : "possède"
+    UTILISATEURS ||--o{ PANIERS : "possède"
+    UTILISATEURS ||--o{ COMMANDES : "passe"
+    UTILISATEURS ||--o{ DEVIS : "demande"
+    UTILISATEURS ||--o{ ARTICLES_BLOG : "écrit"
+    UTILISATEURS ||--o{ COMMENTAIRES : "publie"
+    
+    CATEGORIES ||--o{ PRODUITS : "contient"
+    
+    PRODUITS ||--o{ IMAGES_PRODUIT : "possède"
+    PRODUITS }o--o{ PROMOTIONS : "bénéficie"
+    
+    PANIERS ||--o{ ARTICLES_PANIER : "contient"
+    ARTICLES_PANIER }o--|| PRODUITS : "référence"
+    
+    COMMANDES ||--o{ ARTICLES_COMMANDE : "contient"
+    ARTICLES_COMMANDE }o--|| PRODUITS : "référence"
+    COMMANDES }o--|| ADRESSES : "est livrée à"
+    
+    DEVIS ||--o{ ARTICLES_DEVIS : "contient"
+    
+    SERVICES ||--o{ IMAGES_SERVICE : "possède"
+    
+    ARTICLES_BLOG ||--o{ COMMENTAIRES : "reçoit"
+    
+    PRODUITS_PROMOTION }o--|| PRODUITS : "contient"
+    PRODUITS_PROMOTION }o--|| PROMOTIONS : "appartient à"

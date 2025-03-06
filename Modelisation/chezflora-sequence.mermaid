@@ -1,0 +1,46 @@
+sequenceDiagram
+    actor Client
+    participant Site as Interface Client
+    participant API as API Backend
+    participant BDD as Base de données
+    participant Email as Service Email
+    
+    %% Consultation des produits
+    Client->>Site: Consulte la boutique
+    Site->>API: GET /produits
+    API->>BDD: SELECT * FROM produits
+    BDD-->>API: Données produits
+    API-->>Site: JSON des produits
+    Site-->>Client: Affiche les produits
+    
+    %% Ajout au panier
+    Client->>Site: Ajoute produit au panier
+    Site->>API: POST /panier/items
+    API->>BDD: INSERT INTO panierItems
+    BDD-->>API: Confirmation
+    API-->>Site: Panier mis à jour
+    Site-->>Client: Affiche panier mis à jour
+    
+    %% Validation de commande
+    Client->>Site: Valide la commande
+    Site->>Site: Formulaire de paiement
+    Client->>Site: Saisit informations paiement
+    Site->>API: POST /commandes
+    API->>BDD: BEGIN TRANSACTION
+    API->>BDD: INSERT INTO commandes
+    API->>BDD: INSERT INTO commandeItems
+    API->>BDD: UPDATE produits (stock)
+    API->>BDD: DELETE FROM panierItems
+    API->>BDD: COMMIT TRANSACTION
+    BDD-->>API: Confirmation
+    API->>Email: Envoie confirmation email
+    API-->>Site: Confirmation de commande
+    Site-->>Client: Affiche page confirmation
+    
+    %% Suivi de commande ultérieur
+    Client->>Site: Consulte "Mon compte"
+    Site->>API: GET /client/commandes
+    API->>BDD: SELECT * FROM commandes
+    BDD-->>API: Données commandes
+    API-->>Site: JSON des commandes
+    Site-->>Client: Affiche l'historique des commandes

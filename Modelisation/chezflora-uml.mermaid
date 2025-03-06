@@ -1,0 +1,206 @@
+classDiagram
+    %% Utilisateur (base)
+    class User {
+        +string id
+        +string nom
+        +string prenom
+        +string email
+        +string motDePasse
+        +string telephone
+        +string role
+        +Date dateInscription
+        +authentifier()
+        +modifierProfil()
+        +recupererMotDePasse()
+    }
+    
+    %% Types d'utilisateurs
+    class Client {
+        +Array[Adresse] adresses
+        +consulterHistorique()
+        +creerCommande()
+        +ajouterAuPanier()
+        +demanderDevis()
+    }
+    
+    class Admin {
+        +string niveau
+        +gererProduits()
+        +gererCommandes()
+        +gererUtilisateurs()
+        +gererPromotions()
+        +gererDevis()
+        +gererBlog()
+    }
+    
+    %% Produits et catégories
+    class Produit {
+        +string id
+        +string nom
+        +string description
+        +number prix
+        +number stockDisponible
+        +Array[string] images
+        +boolean actif
+        +Date dateCreation
+        +string categorieId
+        +mettreAJour()
+        +modifierStock()
+        +appliquerPromotion()
+    }
+    
+    class Categorie {
+        +string id
+        +string nom
+        +string description
+        +string imageUrl
+        +getProduits()
+    }
+    
+    %% Commandes et panier
+    class Panier {
+        +string id
+        +string clientId
+        +Array[ArticlePanier] articles
+        +number total
+        +Date dateCreation
+        +ajouterArticle()
+        +supprimerArticle()
+        +modifierQuantite()
+        +calculerTotal()
+        +vider()
+    }
+    
+    class ArticlePanier {
+        +string id
+        +string produitId
+        +number quantite
+        +number prixUnitaire
+        +calculerSousTotal()
+    }
+    
+    class Commande {
+        +string id
+        +string clientId
+        +string statut
+        +Date dateCreation
+        +number montantTotal
+        +string adresseLivraison
+        +string methodePaiement
+        +Array[ArticleCommande] articles
+        +changerStatut()
+        +calculerTotal()
+        +genererFacture()
+    }
+    
+    class ArticleCommande {
+        +string id
+        +string produitId
+        +string commandeId
+        +number quantite
+        +number prixUnitaire
+    }
+    
+    %% Devis
+    class Devis {
+        +string id
+        +string clientId
+        +string statut
+        +string description
+        +string typeEvenement
+        +Date dateEvenement
+        +Date dateCreation
+        +Date dateValidite
+        +number budget
+        +Array[ArticleDevis] articles
+        +string commentaireClient
+        +string commentaireAdmin
+        +envoyerProposition()
+        +modifierStatut()
+        +accepter()
+        +rejeter()
+    }
+    
+    class ArticleDevis {
+        +string id
+        +string devisId
+        +string description
+        +number quantite
+        +number prixUnitaire
+    }
+    
+    %% Services
+    class Service {
+        +string id
+        +string nom
+        +string description
+        +number prixBase
+        +Array[string] images
+        +boolean disponible
+        +verifierDisponibilite()
+    }
+    
+    %% Blog
+    class Article {
+        +string id
+        +string titre
+        +string contenu
+        +string auteurId
+        +Date datePublication
+        +string categorie
+        +string statut
+        +Array[string] images
+        +publier()
+        +depublier()
+        +planifierPublication()
+    }
+    
+    class Commentaire {
+        +string id
+        +string articleId
+        +string clientId
+        +string contenu
+        +Date dateCreation
+        +string statut
+        +approuver()
+        +rejeter()
+        +repondre()
+    }
+    
+    %% Promotions
+    class Promotion {
+        +string id
+        +string nom
+        +string description
+        +number reduction
+        +Date dateDebut
+        +Date dateFin
+        +Array[string] produitsIds
+        +estActive()
+        +appliquerReduction()
+    }
+    
+    %% Relations
+    User <|-- Client
+    User <|-- Admin
+    
+    Client "1" --> "*" Panier : possède
+    Client "1" --> "*" Commande : passe
+    Client "1" --> "*" Devis : demande
+    Client "1" --> "*" Commentaire : écrit
+    
+    Admin "1" --> "*" Article : publie
+    Admin "1" --> "*" Devis : traite
+    
+    Panier "1" --> "*" ArticlePanier : contient
+    ArticlePanier "*" --> "1" Produit : référence
+    
+    Commande "1" --> "*" ArticleCommande : contient
+    ArticleCommande "*" --> "1" Produit : référence
+    
+    Devis "1" --> "*" ArticleDevis : contient
+    
+    Produit "*" --> "1" Categorie : appartient
+    Produit "*" --> "*" Promotion : bénéficie
+    
+    Article "1" --> "*" Commentaire : reçoit

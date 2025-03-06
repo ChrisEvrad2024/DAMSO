@@ -1,0 +1,199 @@
+chezflora-project/
+│
+├── frontend/                      # Application React (côté client)
+│   ├── public/                    # Fichiers statiques publics
+│   │   ├── images/                # Images du site
+│   │   │   ├── logo.png
+│   │   │   ├── banners/
+│   │   │   └── products/
+│   │   ├── favicon.ico
+│   │   └── index.html
+│   │
+│   ├── src/                       # Code source React
+│   │   ├── assets/                # Assets spécifiques aux composants
+│   │   │   ├── icons/
+│   │   │   └── styles/
+│   │   │
+│   │   ├── components/            # Composants React réutilisables
+│   │   │   ├── common/            # Composants génériques (boutons, inputs, etc.)
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── TextField.jsx
+│   │   │   │   ├── Alert.jsx
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── layout/            # Composants de mise en page
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   └── Navigation.jsx
+│   │   │   │
+│   │   │   ├── product/           # Composants liés aux produits
+│   │   │   │   ├── ProductCard.jsx
+│   │   │   │   ├── ProductList.jsx
+│   │   │   │   ├── ProductDetail.jsx
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── cart/              # Composants panier
+│   │   │   │   ├── CartItem.jsx
+│   │   │   │   ├── CartSummary.jsx
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── blog/              # Composants blog
+│   │   │   └── ...
+│   │   │
+│   │   ├── pages/                 # Pages complètes de l'application
+│   │   │   ├── Home.jsx
+│   │   │   ├── Shop.jsx
+│   │   │   ├── ProductDetail.jsx
+│   │   │   ├── Cart.jsx
+│   │   │   ├── Checkout.jsx
+│   │   │   ├── Account/
+│   │   │   │   ├── Login.jsx
+│   │   │   │   ├── Register.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   └── Orders.jsx
+│   │   │   │
+│   │   │   ├── Blog.jsx
+│   │   │   ├── About.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── services/              # Services API et utilitaires
+│   │   │   ├── api.js             # Configuration Axios
+│   │   │   ├── authService.js     # Gestion de l'authentification
+│   │   │   ├── productService.js  # Appels API pour les produits
+│   │   │   ├── cartService.js     # Gestion du panier
+│   │   │   └── ...
+│   │   │
+│   │   ├── context/               # Contextes React (état global)
+│   │   │   ├── AuthContext.jsx    # Contexte d'authentification
+│   │   │   ├── CartContext.jsx    # Contexte du panier
+│   │   │   └── ...
+│   │   │
+│   │   ├── hooks/                 # Custom hooks React
+│   │   │   ├── useAuth.js
+│   │   │   ├── useCart.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── utils/                 # Fonctions utilitaires
+│   │   │   ├── formatters.js      # Formatage (prix, dates, etc.)
+│   │   │   ├── validators.js      # Validation des formulaires
+│   │   │   └── ...
+│   │   │
+│   │   ├── App.jsx                # Composant principal
+│   │   ├── index.jsx              # Point d'entrée React
+│   │   └── routes.jsx             # Configuration des routes
+│   │
+│   ├── package.json
+│   ├── .env
+│   ├── .gitignore
+│   └── README.md
+│
+├── backend/                       # Application NodeJS/Express (API)
+│   ├── config/                    # Configuration
+│   │   ├── database.js            # Configuration MySQL
+│   │   ├── express.js             # Configuration Express
+│   │   ├── logger.js              # Configuration du logger
+│   │   └── ...
+│   │
+│   ├── controllers/               # Contrôleurs
+│   │   ├── authController.js      # Authentification
+│   │   ├── productController.js   # CRUD produits
+│   │   ├── categoryController.js  # CRUD catégories
+│   │   ├── orderController.js     # Commandes
+│   │   ├── quoteController.js     # Devis
+│   │   ├── blogController.js      # Articles blog
+│   │   └── ...
+│   │
+│   ├── models/                    # Modèles pour l'ORM (Sequelize)
+│   │   ├── user.js                # Utilisateur
+│   │   ├── product.js             # Produit
+│   │   ├── category.js            # Catégorie
+│   │   ├── order.js               # Commande
+│   │   ├── orderItem.js           # Article de commande
+│   │   ├── cart.js                # Panier
+│   │   ├── cartItem.js            # Article de panier
+│   │   ├── quote.js               # Devis
+│   │   ├── blog.js                # Article blog
+│   │   ├── comment.js             # Commentaire blog
+│   │   ├── address.js             # Adresse
+│   │   └── ...
+│   │
+│   ├── routes/                    # Routes API
+│   │   ├── authRoutes.js
+│   │   ├── productRoutes.js
+│   │   ├── categoryRoutes.js
+│   │   ├── orderRoutes.js
+│   │   ├── quoteRoutes.js
+│   │   ├── blogRoutes.js
+│   │   └── ...
+│   │
+│   ├── middleware/                # Middleware Express
+│   │   ├── auth.js                # Vérification JWT
+│   │   ├── roleCheck.js           # Vérification des rôles
+│   │   ├── errorHandler.js        # Gestion d'erreurs
+│   │   ├── validation.js          # Validation des données
+│   │   └── ...
+│   │
+│   ├── services/                  # Services métier
+│   │   ├── emailService.js        # Service d'emails
+│   │   ├── paymentService.js      # Service de paiement
+│   │   ├── uploadService.js       # Service d'upload d'images
+│   │   ├── backupService.js       # Service de sauvegarde
+│   │   └── ...
+│   │
+│   ├── utils/                     # Fonctions utilitaires
+│   │   ├── apiResponse.js         # Format de réponse API
+│   │   ├── validators.js          # Validateurs de données
+│   │   ├── dateUtils.js           # Utilitaires de dates
+│   │   └── ...
+│   │
+│   ├── migrations/                # Migrations de base de données (Sequelize)
+│   │   ├── 20250310-create-users.js
+│   │   ├── 20250310-create-products.js
+│   │   └── ...
+│   │
+│   ├── seeders/                   # Données initiales (Sequelize)
+│   │   ├── 20250310-demo-users.js
+│   │   ├── 20250310-demo-products.js
+│   │   └── ...
+│   │
+│   ├── public/                    # Fichiers statiques servis par l'API
+│   │   ├── uploads/               # Images uploadées
+│   │   │   ├── products/
+│   │   │   ├── blog/
+│   │   │   └── ...
+│   │   │
+│   │   └── docs/                  # Documentation API
+│   │
+│   ├── app.js                     # Application Express
+│   ├── server.js                  # Point d'entrée serveur
+│   ├── package.json
+│   ├── .env                       # Variables d'environnement
+│   ├── .gitignore
+│   └── README.md
+│
+├── admin-dashboard/              # Interface d'administration (React)
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Products/
+│   │   │   ├── Orders/
+│   │   │   ├── Quotes/
+│   │   │   ├── Blog/
+│   │   │   ├── Users/
+│   │   │   └── ...
+│   │   │
+│   │   ├── services/
+│   │   └── ...
+│   │
+│   ├── package.json
+│   └── ...
+│
+├── docs/                         # Documentation technique
+├── scripts/                      # Scripts utilitaires
+├── .gitignore
+├── package.json                  # Package principal (pour les commandes globales)
+└── README.md

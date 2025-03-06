@@ -1,0 +1,50 @@
+stateDiagram-v2
+    %% États d'une commande
+    state "États d'une commande" as CommandeStates {
+        [*] --> EnAttente: Création
+        EnAttente --> EnPréparation: Admin traite la commande
+        EnPréparation --> EnLivraison: Préparation terminée
+        EnLivraison --> Livré: Livraison terminée
+        
+        EnAttente --> Annulé: Annulation par client/admin
+        EnPréparation --> Annulé: Problème de stock
+        EnLivraison --> Retourné: Problème de livraison
+        
+        Livré --> [*]
+        Annulé --> [*]
+        Retourné --> [*]
+    }
+    
+    %% États d'un devis
+    state "États d'un devis" as DevisStates {
+        [*] --> DemandéParClient: Soumission formulaire
+        DemandéParClient --> EnCoursDeTraitement: Admin prend en charge
+        EnCoursDeTraitement --> PropositionEnvoyée: Admin envoie proposition
+        
+        PropositionEnvoyée --> DevisAccepté: Client accepte
+        PropositionEnvoyée --> DevisRefusé: Client refuse
+        PropositionEnvoyée --> DevisExpiré: Aucune réponse après délai
+        
+        DevisAccepté --> CommandeGénérée: Création commande spéciale
+        
+        DevisRefusé --> [*]
+        DevisExpiré --> [*]
+        CommandeGénérée --> [*]
+    }
+    
+    %% États d'un article de blog
+    state "États d'un article de blog" as BlogStates {
+        [*] --> Brouillon: Création
+        Brouillon --> EnAttenteDApprobation: Soumission
+        EnAttenteDApprobation --> Publié: Approbation admin
+        EnAttenteDApprobation --> Rejeté: Rejet admin
+        
+        Publié --> Archivé: Anciens articles
+        Publié --> Supprimé: Suppression
+        
+        Brouillon --> Supprimé: Suppression
+        Rejeté --> Brouillon: Modifications
+        
+        Supprimé --> [*]
+        Archivé --> [*]
+    }
