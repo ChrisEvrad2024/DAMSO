@@ -5,6 +5,8 @@ const { sendEmail } = require('../services/emailService');
 const logger = require('../config/logger');
 const paginate = require('../utils/paginate');
 const { Op } = require('sequelize');
+const { toJSON } = require('../utils/sequelizeUtils');
+
 
 // @desc    Request a quote
 // @route   POST /api/quotes

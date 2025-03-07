@@ -64,7 +64,11 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Promotion',
         tableName: 'promotions',
-        underscored: true
+        underscored: true,
+        toJSON: {
+            virtuals: true,
+            getterMethods: true
+        }
     });
 
     return Promotion;

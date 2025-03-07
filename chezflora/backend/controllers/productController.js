@@ -5,8 +5,54 @@ const logger = require('../config/logger');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+const { toJSON } = require('../utils/sequelizeUtils');
+
 
 const paginate = require('../utils/paginate');
+
+// Helper function to calculate discounted price
+const calculateDiscountedPrice = (product, promotions) => {
+    if (!promotions || !promotions.length) return null;
+
+    // Find active promotions
+    const now = new Date();
+    const activePromotions = promotions.filter(promo =>
+        promo.is_active &&
+        new Date(promo.start_date) <= now &&
+        new Date(promo.end_date) >= now
+    );
+
+    if (!activePromotions.length) return null;
+
+    // Find the best discount
+    let bestDiscount = 0;
+    let bestPromotionId = null;
+
+    activePromotions.forEach(promotion => {
+        let discountAmount = 0;
+
+        if (promotion.discount_type === 'percentage') {
+            discountAmount = (product.price * promotion.discount_value) / 100;
+        } else { // fixed_amount
+            discountAmount = promotion.discount_value;
+        }
+
+        if (discountAmount > bestDiscount) {
+            bestDiscount = discountAmount;
+            bestPromotionId = promotion.id;
+        }
+    });
+
+    // Calculate final price
+    const discountedPrice = Math.max(0, product.price - bestDiscount).toFixed(2);
+
+    return {
+        original_price: product.price,
+        discounted_price: parseFloat(discountedPrice),
+        discount_amount: bestDiscount,
+        promotion_id: bestPromotionId
+    };
+};
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -87,13 +133,30 @@ exports.getProducts = async (req, res, next) => {
                     model: Category,
                     as: 'category',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: Promotion,
+                    as: 'promotions',
+                    attributes: ['id', 'name', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                    through: { attributes: [] }
                 }
             ]
         });
 
+        // Add discounted price information
+        const productsWithPricing = result.data.map(product => {
+            const productJson = product.toJSON();
+            const pricingInfo = calculateDiscountedPrice(productJson, productJson.promotions);
+
+            return {
+                ...productJson,
+                pricing: pricingInfo
+            };
+        });
+
         res.json({
             success: true,
-            data: result.data,
+            data: productsWithPricing,
             pagination: result.pagination
         });
     } catch (error) {
@@ -117,6 +180,12 @@ exports.getProduct = async (req, res, next) => {
                     model: Category,
                     as: 'category',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: Promotion,
+                    as: 'promotions',
+                    attributes: ['id', 'name', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                    through: { attributes: [] }
                 }
             ]
         });
@@ -125,9 +194,15 @@ exports.getProduct = async (req, res, next) => {
             throw new ApiError('Product not found', 404);
         }
 
+        // Add discounted price information
+        const productJson = product.toJSON();
+        const pricingInfo = calculateDiscountedPrice(productJson, productJson.promotions);
+
+        productJson.pricing = pricingInfo;
+
         res.json({
             success: true,
-            data: product
+            data: productJson
         });
     } catch (error) {
         next(error);
@@ -202,13 +277,27 @@ exports.createProduct = async (req, res, next) => {
                     model: Category,
                     as: 'category',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: Promotion,
+                    as: 'promotions',
+                    attributes: ['id', 'name', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                    through: { attributes: [] }
                 }
             ]
         });
 
+        // Add pricing information if there are associated promotions
+        const newProductJson = newProduct.toJSON();
+        const pricingInfo = calculateDiscountedPrice(newProductJson, newProductJson.promotions || []);
+
+        if (pricingInfo) {
+            newProductJson.pricing = pricingInfo;
+        }
+
         res.status(201).json({
             success: true,
-            data: newProduct
+            data: newProductJson
         });
     } catch (error) {
         await transaction.rollback();
@@ -308,13 +397,27 @@ exports.updateProduct = async (req, res, next) => {
                     model: Category,
                     as: 'category',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: Promotion,
+                    as: 'promotions',
+                    attributes: ['id', 'name', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                    through: { attributes: [] }
                 }
             ]
         });
 
+        // Add pricing information if there are associated promotions
+        const updatedProductJson = updatedProduct.toJSON();
+        const pricingInfo = calculateDiscountedPrice(updatedProductJson, updatedProductJson.promotions || []);
+
+        if (pricingInfo) {
+            updatedProductJson.pricing = pricingInfo;
+        }
+
         res.json({
             success: true,
-            data: updatedProduct
+            data: updatedProductJson
         });
     } catch (error) {
         await transaction.rollback();
@@ -396,8 +499,25 @@ exports.searchProducts = async (req, res, next) => {
                     model: Category,
                     as: 'category',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: Promotion,
+                    as: 'promotions',
+                    attributes: ['id', 'name', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                    through: { attributes: [] }
                 }
             ]
+        });
+
+        // Add discounted price information
+        const productsWithPricing = products.map(product => {
+            const productJson = product.toJSON();
+            const pricingInfo = calculateDiscountedPrice(productJson, productJson.promotions || []);
+
+            return {
+                ...productJson,
+                pricing: pricingInfo
+            };
         });
 
         res.json({
@@ -405,7 +525,7 @@ exports.searchProducts = async (req, res, next) => {
             count,
             total_pages: Math.ceil(count / limit),
             current_page: parseInt(page, 10),
-            data: products
+            data: productsWithPricing
         });
     } catch (error) {
         next(error);

@@ -56,7 +56,13 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'testimonials',
         underscored: true,
         timestamps: true,
-        updatedAt: false
+        updatedAt: false,
+        // Options pour eviter les problèmes de sérialisation
+        toJSON: {
+            virtuals: true,
+            // Exclure les champs qui peuvent causer des problèmes
+            getterMethods: true
+        }
     });
 
     return Testimonial;

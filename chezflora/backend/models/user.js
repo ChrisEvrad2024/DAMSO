@@ -108,6 +108,12 @@ module.exports = (sequelize, DataTypes) => {
                     user.password = await bcrypt.hash(user.password, 10);
                 }
             }
+        },
+        // Options pour eviter les problèmes de sérialisation
+        toJSON: {
+            virtuals: true,
+            // Exclure les champs qui peuvent causer des problèmes
+            getterMethods: true
         }
     });
 

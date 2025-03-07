@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'service_images',
         underscored: true,
         timestamps: true,
-        updatedAt: false
+        updatedAt: false,
+        // Options pour eviter les problèmes de sérialisation
+        toJSON: {
+            virtuals: true,
+            // Exclure les champs qui peuvent causer des problèmes
+            getterMethods: true
+        }
     });
 
     return ServiceImage;

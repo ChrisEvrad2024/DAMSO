@@ -1,6 +1,8 @@
 const { Cart, CartItem, Product, ProductImage, Category, sequelize } = require('../models');
 const { ApiError } = require('../middleware/errorHandler');
 const logger = require('../config/logger');
+const { toJSON } = require('../utils/sequelizeUtils');
+
 
 // @desc    Get user cart
 // @route   GET /api/cart
@@ -59,6 +61,62 @@ exports.getCart = async (req, res, next) => {
     }
 };
 
+// Helper function to get current product price with promotions
+const getCurrentProductPrice = async (productId) => {
+    const product = await Product.findByPk(productId, {
+        include: [
+            {
+                model: Promotion,
+                as: 'promotions',
+                attributes: ['id', 'discount_type', 'discount_value', 'start_date', 'end_date', 'is_active'],
+                through: { attributes: [] }
+            }
+        ]
+    });
+    // Calculate current price with promotions
+    const productJson = product.toJSON();
+    const pricingInfo = calculateDiscountedPrice(productJson, productJson.promotions || []);
+    const currentPrice = pricingInfo && pricingInfo.discounted_price
+        ? pricingInfo.discounted_price
+        : product.price;
+    if (!product) {
+        throw new ApiError('Product not found', 404);
+    }
+
+    // Calculate discounted price if promotions exist
+    const now = new Date();
+    const activePromotions = product.promotions.filter(promo =>
+        promo.is_active &&
+        new Date(promo.start_date) <= now &&
+        new Date(promo.end_date) >= now
+    );
+
+    if (!activePromotions.length) {
+        return product.price;
+    }
+
+    // Find the best discount
+    let bestDiscount = 0;
+
+    activePromotions.forEach(promotion => {
+        let discountAmount = 0;
+
+        if (promotion.discount_type === 'percentage') {
+            discountAmount = (product.price * promotion.discount_value) / 100;
+        } else { // fixed_amount
+            discountAmount = promotion.discount_value;
+        }
+
+        if (discountAmount > bestDiscount) {
+            bestDiscount = discountAmount;
+        }
+    });
+
+    // Calculate final price
+    return Math.max(0, product.price - bestDiscount);
+};
+
+
 // @desc    Add item to cart
 // @route   POST /api/cart/items
 // @access  Private
@@ -82,6 +140,9 @@ exports.addToCart = async (req, res, next) => {
             throw new ApiError('Not enough product in stock', 400);
         }
 
+        // Get current price with promotions
+        const currentPrice = await getCurrentProductPrice(product_id);
+        cartItem.unit_price = currentPrice;
         // Find or create user's cart
         const [cart, created] = await Cart.findOrCreate({
             where: { user_id: req.user.id },
@@ -113,7 +174,7 @@ exports.addToCart = async (req, res, next) => {
                 cart_id: cart.id,
                 product_id,
                 quantity: parseInt(quantity, 10),
-                unit_price: product.price
+                unit_price: currentPrice
             }, { transaction });
         }
 

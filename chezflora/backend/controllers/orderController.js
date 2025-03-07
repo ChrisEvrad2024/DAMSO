@@ -5,6 +5,7 @@ const { ApiError } = require('../middleware/errorHandler');
 const { sendEmail } = require('../services/emailService');
 const paginate = require('../utils/paginate');
 const logger = require('../config/logger');
+const { toJSON } = require('../utils/sequelizeUtils');
 
 // Generate unique order number
 const generateOrderNumber = () => {

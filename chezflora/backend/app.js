@@ -17,6 +17,10 @@ const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const quoteRoutes = require('./routes/quoteRoutes');
 const addressRoutes = require('./routes/addressRoutes');
+const blogRoutes = require('./routes/blogRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
+const promotionRoutes = require('./routes/promotionRoutes');
 
 // Create Express app
 const app = express();
@@ -49,6 +53,10 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/quotes', quoteRoutes);
 app.use('/api/addresses', addressRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/promotions', promotionRoutes);
 // API Root route
 app.get('/', (req, res) => {
     res.json({ 

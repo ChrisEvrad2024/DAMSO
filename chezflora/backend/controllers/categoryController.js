@@ -2,7 +2,9 @@ const { Category, Product } = require('../models');
 const { ApiError } = require('../middleware/errorHandler');
 const paginate = require('../utils/paginate');
 const logger = require('../config/logger');
+const { toJSON } = require('../utils/sequelizeUtils');
 
+// Dans vos contrôleurs:
 // @desc    Get all categories
 // @route   GET /api/categories
 // @access  Public

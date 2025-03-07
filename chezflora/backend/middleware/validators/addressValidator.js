@@ -17,6 +17,10 @@ exports.validateCreateAddress = [
         .notEmpty().withMessage('Address line 1 is required')
         .isLength({ min: 5, max: 255 }).withMessage('Address line 1 must be between 5 and 255 characters'),
 
+    check('address_line2')
+        .optional()
+        .trim(),
+
     check('city')
         .trim()
         .notEmpty().withMessage('City is required')
@@ -35,7 +39,12 @@ exports.validateCreateAddress = [
     check('phone')
         .optional()
         .trim()
-        .isLength({ min: 5, max: 20 }).withMessage('Phone must be between 5 and 20 characters'),
+        .isMobilePhone().withMessage('Please provide a valid phone number'),
+
+    check('address_name')
+        .optional()
+        .trim()
+        .isLength({ max: 100 }).withMessage('Address name must be less than 100 characters'),
 
     check('is_default')
         .optional()
@@ -60,6 +69,10 @@ exports.validateUpdateAddress = [
         .trim()
         .isLength({ min: 5, max: 255 }).withMessage('Address line 1 must be between 5 and 255 characters'),
 
+    check('address_line2')
+        .optional()
+        .trim(),
+
     check('city')
         .optional()
         .trim()
@@ -78,7 +91,12 @@ exports.validateUpdateAddress = [
     check('phone')
         .optional()
         .trim()
-        .isLength({ min: 5, max: 20 }).withMessage('Phone must be between 5 and 20 characters'),
+        .isMobilePhone().withMessage('Please provide a valid phone number'),
+
+    check('address_name')
+        .optional()
+        .trim()
+        .isLength({ max: 100 }).withMessage('Address name must be less than 100 characters'),
 
     check('is_default')
         .optional()
