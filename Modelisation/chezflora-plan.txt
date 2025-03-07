@@ -1,0 +1,181 @@
+# Plan de développement ChezFlora
+
+## Phase 1: Configuration de l'environnement et mise en place de l'architecture
+
+### Étape 1: Initialisation du projet
+- Créer la structure de dossiers principale
+- Initialiser les projets Node.js (backend, frontend, admin)
+- Configurer Git et créer le repository
+- Mettre en place le .gitignore
+
+### Étape 2: Configuration du backend (Express)
+- Installer les dépendances principales:
+  ```bash
+  npm init -y
+  npm install express mysql2 sequelize dotenv cors helmet morgan winston jsonwebtoken bcrypt multer uuid nodemailer express-validator
+  npm install nodemon sequelize-cli --save-dev
+  ```
+- Configurer Express et les middlewares de base
+- Configurer Sequelize pour MySQL
+- Mettre en place la structure des dossiers
+
+### Étape 3: Configuration de la base de données
+- Configurer MySQL localement
+- Créer la base de données
+- Configurer Sequelize et définir les migrations initiales
+- Tester la connexion à la base de données
+
+### Étape 4: Configuration du frontend (React)
+- Initialiser le projet React
+  ```bash
+  npx create-react-app frontend
+  cd frontend
+  npm install axios react-router-dom formik yup react-query styled-components react-icons tailwindcss
+  ```
+- Configurer Tailwind CSS
+- Mettre en place la structure des composants
+- Configurer les routes principales
+
+## Phase 2: Développement du backend
+
+### Étape 5: Modèles de données
+- Définir tous les modèles Sequelize (User, Product, Category, etc.)
+- Configurer les relations entre les modèles
+- Créer les migrations pour générer les tables
+- Créer des seeders avec des données de test
+
+### Étape 6: Authentification et gestion des utilisateurs
+- Implémenter le système d'inscription/connexion
+- Définir les middlewares d'authentification JWT
+- Créer les contrôleurs pour la gestion des utilisateurs
+- Ajouter la gestion des rôles et permissions
+
+### Étape 7: API de gestion des produits et catégories
+- Développer les contrôleurs CRUD pour les produits
+- Développer les contrôleurs CRUD pour les catégories
+- Mettre en place la gestion des images
+- Implémenter la recherche et le filtrage
+
+### Étape 8: API de gestion du panier et des commandes
+- Développer les fonctionnalités du panier
+- Implémenter le processus de commande
+- Ajouter la gestion des adresses de livraison
+- Intégrer un système de notification par email
+
+### Étape 9: API de gestion des devis
+- Développer le système de demande de devis
+- Implémenter la gestion des devis côté admin
+- Ajouter les notifications email pour les devis
+
+### Étape 10: API pour le blog et les commentaires
+- Développer les contrôleurs pour les articles
+- Implémenter la gestion des commentaires
+- Ajouter la modération des commentaires
+
+### Étape 11: API pour les promotions et services
+- Développer les contrôleurs pour les promotions
+- Implémenter la gestion des services
+- Configurer les règles de réduction
+
+## Phase 3: Développement du frontend (site client)
+
+### Étape 12: Interface utilisateur - Pages de base
+- Développer la page d'accueil
+- Créer les composants de header et footer
+- Mettre en place la navigation
+- Créer les pages de base (À propos, Contact)
+
+### Étape 13: Authentification et gestion de compte
+- Développer les formulaires d'inscription/connexion
+- Créer la page de tableau de bord utilisateur
+- Implémenter la gestion des adresses
+- Ajouter l'historique des commandes
+
+### Étape 14: Boutique et produits
+- Développer la page boutique avec filtres
+- Créer la page de détail produit
+- Implémenter la recherche
+- Ajouter les fonctionnalités de tri et pagination
+
+### Étape 15: Panier et processus de commande
+- Développer le panier avec React Context
+- Créer l'interface du panier
+- Implémenter le processus de checkout
+- Ajouter la sélection d'adresse et le paiement
+
+### Étape 16: Devis et services personnalisés
+- Développer le formulaire de demande de devis
+- Créer la page de suivi des devis
+- Implémenter la visualisation des propositions
+
+### Étape 17: Blog et commentaires
+- Développer la page de liste des articles
+- Créer la page d'article complet
+- Implémenter le système de commentaires
+
+## Phase 4: Développement du dashboard admin
+
+### Étape 18: Interface d'administration - Structure
+- Développer la page de login admin
+- Créer le layout du dashboard
+- Mettre en place la navigation
+- Ajouter le tableau de bord principal
+
+### Étape 19: Gestion des produits et catégories
+- Développer l'interface de gestion des produits
+- Créer les formulaires d'ajout/modification
+- Implémenter la gestion des catégories
+- Ajouter la gestion des images
+
+### Étape 20: Gestion des commandes
+- Développer la liste des commandes
+- Créer la page de détail de commande
+- Implémenter le changement de statut
+- Ajouter les notifications
+
+### Étape 21: Gestion des devis
+- Développer l'interface de gestion des devis
+- Créer les formulaires de réponse
+- Implémenter le suivi des devis
+
+### Étape 22: Gestion du blog et commentaires
+- Développer l'éditeur d'articles
+- Créer la gestion des commentaires
+- Implémenter la modération
+
+### Étape 23: Gestion des utilisateurs et promotions
+- Développer l'interface de gestion des utilisateurs
+- Créer l'interface de gestion des promotions
+- Implémenter les statistiques et rapports
+
+## Phase 5: Tests, optimisations et déploiement
+
+### Étape 24: Tests
+- Mettre en place les tests unitaires backend
+- Ajouter les tests d'intégration API
+- Tester l'interface utilisateur
+
+### Étape 25: Optimisations
+- Optimiser les performances de la base de données
+- Ajouter du caching où nécessaire
+- Optimiser les requêtes API
+- Améliorer les performances du frontend
+
+### Étape 26: Sécurité
+- Audit de sécurité complet
+- Implémentation des correctifs
+- Configuration de CORS et CSP
+- Protection contre les attaques courantes
+
+### Étape 27: Déploiement
+- Configurer l'environnement de production
+- Mettre en place CI/CD
+- Déployer le backend sur un serveur
+- Déployer le frontend sur un service d'hébergement statique
+- Configurer les DNS et HTTPS
+
+### Étape 28: Documentation
+- Documenter l'API avec Swagger
+- Créer la documentation technique
+- Rédiger le guide d'utilisation admin
+- Préparer la documentation de maintenance

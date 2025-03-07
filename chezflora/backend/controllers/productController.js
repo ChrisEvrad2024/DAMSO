@@ -6,13 +6,14 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
+const paginate = require('../utils/paginate');
+
 // @desc    Get all products
 // @route   GET /api/products
 // @access  Public
 exports.getProducts = async (req, res, next) => {
     try {
-        const { category, search, sort, min_price, max_price } = req.query;
-        const { offset, limit } = req.pagination;
+        const { category, search, min_price, max_price, sort } = req.query;
 
         // Build query conditions
         const conditions = { is_active: true };
@@ -67,11 +68,11 @@ exports.getProducts = async (req, res, next) => {
                 order = [['created_at', 'DESC']];
         }
 
-        // Query products with pagination
-        const { count, rows: products } = await Product.findAndCountAll({
+        // Use the paginate utility
+        const result = await paginate(Product, {
+            page: req.pagination.page,
+            limit: req.pagination.limit,
             where: conditions,
-            limit: limit,
-            offset: offset,
             order,
             include: [
                 {
@@ -90,14 +91,10 @@ exports.getProducts = async (req, res, next) => {
             ]
         });
 
-        // Set pagination headers
-        res.setPaginationHeaders(count);
-
-        // Send response
         res.json({
             success: true,
-            data: products,
-            pagination: res.locals.pagination
+            data: result.data,
+            pagination: result.pagination
         });
     } catch (error) {
         next(error);

@@ -1,5 +1,6 @@
 const { Category, Product } = require('../models');
 const { ApiError } = require('../middleware/errorHandler');
+const paginate = require('../utils/paginate');
 const logger = require('../config/logger');
 
 // @desc    Get all categories
@@ -7,28 +8,18 @@ const logger = require('../config/logger');
 // @access  Public
 exports.getCategories = async (req, res, next) => {
     try {
-        const { offset, limit } = req.pagination;
-
-        // Get total count for pagination
-        const count = await Category.count({
-            where: { is_active: true }
-        });
-
-        // Get categories with pagination
-        const categories = await Category.findAll({
+        // Use the paginate utility with custom sort order
+        const result = await paginate(Category, {
+            page: req.pagination.page,
+            limit: req.pagination.limit,
             where: { is_active: true },
-            order: [['sort_order', 'ASC']],
-            limit: limit,
-            offset: offset
+            order: [['sort_order', 'ASC']]
         });
-
-        // Set pagination headers
-        res.setPaginationHeaders(count);
 
         res.json({
             success: true,
-            data: categories,
-            pagination: res.locals.pagination
+            data: result.data,
+            pagination: result.pagination
         });
     } catch (error) {
         next(error);

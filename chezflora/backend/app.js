@@ -13,6 +13,10 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const quoteRoutes = require('./routes/quoteRoutes');
+const addressRoutes = require('./routes/addressRoutes');
 
 // Create Express app
 const app = express();
@@ -38,7 +42,13 @@ app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
-
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/quotes', quoteRoutes);
+app.use('/api/addresses', addressRoutes);
 // API Root route
 app.get('/', (req, res) => {
     res.json({ 
